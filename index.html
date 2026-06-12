@@ -979,13 +979,9 @@
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelector('.tab').classList.add('active');
 
-    // Mostra todos os grupos ao buscar (pois filtramos individualmente)
-    document.querySelectorAll('.ruas-grupo').forEach(g => {
-      g.style.display = 'block';
-    });
-
     let algumVisivel = false;
 
+    // Filtra cada rua-item
     document.querySelectorAll('.rua-item').forEach(item => {
       const nome = item.textContent.toLowerCase();
       if (termo === '' || nome.includes(termo)) {
@@ -996,10 +992,18 @@
       }
     });
 
-    // Oculta grupos de letras sem nenhuma rua visível
-    document.querySelectorAll('.ruas-grupo').forEach(g => {
-      const visivel = Array.from(g.querySelectorAll('.rua-item')).some(i => !i.classList.contains('hidden'));
-      g.style.display = visivel ? 'block' : 'none';
+    // Oculta grupo-label se não tiver nenhum rua-item visível após ele
+    document.querySelectorAll('.grupo-label').forEach(label => {
+      let next = label.nextElementSibling;
+      let temVisivel = false;
+      while (next && !next.classList.contains('grupo-label')) {
+        if (next.classList.contains('rua-item') && !next.classList.contains('hidden')) {
+          temVisivel = true;
+          break;
+        }
+        next = next.nextElementSibling;
+      }
+      label.style.display = (termo === '' || temVisivel) ? '' : 'none';
     });
 
     document.getElementById('nenhumResultado').style.display = (!algumVisivel && termo !== '') ? 'block' : 'none';
