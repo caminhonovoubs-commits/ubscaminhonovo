@@ -975,10 +975,14 @@
   function filtrarRuas() {
     const termo = document.getElementById('buscaRua').value.toLowerCase().trim();
 
-    // Mostra todos os grupos ao buscar
-    document.querySelectorAll('.ruas-grupo').forEach(g => g.style.display = 'block');
+    // Ativa a aba "Todas" ao digitar
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelector('.tab').classList.add('active');
+
+    // Mostra todos os grupos ao buscar (pois filtramos individualmente)
+    document.querySelectorAll('.ruas-grupo').forEach(g => {
+      g.style.display = 'block';
+    });
 
     let algumVisivel = false;
 
@@ -990,6 +994,12 @@
       } else {
         item.classList.add('hidden');
       }
+    });
+
+    // Oculta grupos de letras sem nenhuma rua visível
+    document.querySelectorAll('.ruas-grupo').forEach(g => {
+      const visivel = Array.from(g.querySelectorAll('.rua-item')).some(i => !i.classList.contains('hidden'));
+      g.style.display = visivel ? 'block' : 'none';
     });
 
     document.getElementById('nenhumResultado').style.display = (!algumVisivel && termo !== '') ? 'block' : 'none';
